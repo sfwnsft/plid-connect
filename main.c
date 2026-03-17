@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DATA_FILE "patients.txt"
+#define DATA_FILE "patient-data.txt"
 
 void showMenu() {
     printf("--------------------------------------------\n");
@@ -52,35 +52,43 @@ void docRecom() {
 }
 
 void PlidGuidance(int severity, float bmi) {
-    printf("\nPLID Guidance:\n");
+    
+    printf("\nGuidance:\n");
 
     if (severity == 1) {
         printf("1. Mild PLID: start with rest and physiotherapy.\n");
-    } else if (severity == 2) {
+    } 
+    else if (severity == 2) {
         printf("1. Moderate PLID: regular physiotherapy is needed.\n");
-    } else {
+    } 
+    else {
         printf("1. Severe PLID: consult a spinal specialist quickly.\n");
     }
 
     if (bmi < 18.5) {
         printf("2. Low BMI may reduce muscle support for spine.\n");
         printf("3. Improve nutrition and core-strength exercises.\n");
-    } else if (bmi < 25.0) {
+    } 
+    else if (bmi < 25.0) {
         printf("2. BMI is normal, continue spine-safe routine.\n");
         printf("3. Maintain posture and regular stretching.\n");
-    } else if (bmi < 30.0) {
+    } 
+    else if (bmi < 30.0) {
         printf("2. Higher BMI increases pressure on lumbar discs.\n");
         printf("3. Start gradual weight loss and low-impact exercise.\n");
-    } else {
+    } 
+    else {
         printf("2. High BMI strongly increases PLID strain and pain risk.\n");
         printf("3. Weight reduction should be part of PLID treatment plan.\n");
     }
 
     if (severity == 3 && bmi >= 30.0) {
         printf("4. Severe PLID + high BMI: urgent specialist follow-up advised.\n");
-    } else if (severity >= 2 && bmi >= 25.0) {
+    } 
+    else if (severity >= 2 && bmi >= 25.0) {
         printf("4. Moderate/Severe PLID + high BMI: strict rehab and weight control needed.\n");
-    } else {
+    } 
+    else {
         printf("4. Continue follow-up and monitor pain changes weekly.\n");
     }
 
@@ -92,9 +100,11 @@ void PlidGuidance(int severity, float bmi) {
 
     if (severity == 1) {
         printf("10. Re-check in 4-6 weeks if pain does not improve.\n");
-    } else if (severity == 2) {
+    } 
+    else if (severity == 2) {
         printf("10. Re-check in 2-4 weeks and track pain score daily.\n");
-    } else {
+    } 
+    else {
         printf("10. Keep specialist appointments and follow treatment strictly.\n");
     }
 }
@@ -102,7 +112,7 @@ void PlidGuidance(int severity, float bmi) {
 void addPatient() {
     char name[50];
     int age;
-    char gender[10];
+    char gender[20];
     char discLevel[20];
     int severity;
     char severityText[20];
@@ -118,60 +128,49 @@ void addPatient() {
     printf("--------------------------------------------\n");
 
     printf("Name: ");
-    scanf(" %49[^\n]", name);
+    scanf(" %[^\n]", name);
 
     printf("Age: ");
     scanf("%d", &age);
-    while (age < 1 || age > 120) {
-        printf("Invalid age. Enter age (1-120): ");
-        scanf("%d", &age);
-    }
-
+    
     printf("Gender (M/F): ");
-    scanf(" %9s", gender);
+    scanf(" %s", gender);
 
     printf("Disc Level (e.g. L4-L5): ");
-    scanf(" %19s", discLevel);
+    scanf(" %s", discLevel);
 
     printf("Severity (1=Mild, 2=Moderate, 3=Severe): ");
     scanf("%d", &severity);
-    while (severity < 1 || severity > 3) {
-        printf("Invalid severity. Enter 1, 2, or 3: ");
-        scanf("%d", &severity);
-    }
-
+    
     printf("Height in feet (e.g. 5.7): ");
     scanf("%f", &height);
-    while (height <= 0) {
-        printf("Invalid height. Enter height in feet: ");
-        scanf("%f", &height);
-    }
-
+    
     printf("Weight in kg (e.g. 68): ");
     scanf("%f", &weight);
-    while (weight <= 0) {
-        printf("Invalid weight. Enter weight in kg: ");
-        scanf("%f", &weight);
-    }
-
+    
     heightMeters = height * 0.3048;
     bmi = weight / (heightMeters * heightMeters);
 
     if (severity == 1) {
         strcpy(severityText, "Mild");
-    } else if (severity == 2) {
+    } 
+    else if (severity == 2) {
         strcpy(severityText, "Moderate");
-    } else {
+    } 
+    else {
         strcpy(severityText, "Severe");
     }
 
     if (bmi < 18.5) {
         strcpy(bmiText, "Underweight");
-    } else if (bmi < 25.0) {
+    } 
+    else if (bmi < 25.0) {
         strcpy(bmiText, "Normal");
-    } else if (bmi < 30.0) {
+    } 
+    else if (bmi < 30.0) {
         strcpy(bmiText, "Overweight");
-    } else {
+    } 
+    else {
         strcpy(bmiText, "Obese");
     }
 
