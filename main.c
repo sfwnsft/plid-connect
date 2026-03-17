@@ -4,26 +4,25 @@
 #define DATA_FILE "patient-data.txt"
 
 void showMenu() {
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
     printf("Welcome to PLID Connect\n");
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
     printf("2. View Patient Records\n");
     printf("3. Doctor Recommendations\n");
     printf("4. About PLID & PLID Connect\n");
     printf("5. Exit\n");
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
 }
 
 void aboutPlid() {
-    printf("\n--------------------------------------------\n");
+    printf("\n--------------------------------------------------\n");
     printf("About PLID\n");
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
     printf("PLID means Prolapsed Lumbar Intervertebral Disc.\n");
-    printf("It happens when a disc in the lower back moves out\n");
-    printf("of place and presses nearby nerves.\n\n");
+    printf("This disorder happens when a disc in the lower back moves out of place and presses nearby nerves.\n\n");
 
-    printf("Common Causes:\n");
+    printf("Few Common Causes:\n");
     printf("1. Repeated heavy lifting with poor posture\n");
     printf("2. Sudden twisting or bending movements\n");
     printf("3. Age-related disc wear and tear\n");
@@ -31,22 +30,22 @@ void aboutPlid() {
 
     printf("Risk Factors:\n");
     printf("1. Overweight or obesity\n");
-    printf("2. Long hours of sitting\n");
+    printf("2. Long duration of sitting\n");
     printf("3. Weak core and back muscles\n");
     printf("4. Smoking and low physical activity\n");
     printf("5. Family history of spine problems\n");
 
-    printf("\n--------------------------------------------\n");
+    printf("\n--------------------------------------------------\n");
     printf("About PLID Connect\n");
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
     printf("PLID Connect is a solo project developed & maintained by Safwan Safat.\n");
     printf("It takes the user's data with consent and gives doctor recommendations, guidance, and healthcare tips based on the data.\n\n");
 }
 
 void docRecom() {
-    printf("\n--------------------------------------------\n");
+    printf("\n--------------------------------------------------\n");
     printf("Doctor Recommendations\n");
-    printf("--------------------------------------------\n");
+    printf("--------------------------------------------------\n");
     printf("1. Dr. Shah Alam, MBBS, BSMRMU\n");
     printf("2. Dr. Nazrul Islam Rony, MBBS, DMC\n\n");
 }
@@ -56,16 +55,16 @@ void PlidGuidance(int severity, float bmi) {
     printf("\nGuidance:\n");
 
     if (severity == 1) {
-        printf("1. Mild PLID: start with rest and physiotherapy.\n");
+        printf("1. Mild condition: start with rest and physiotherapy.\n");
     } 
     else if (severity == 2) {
-        printf("1. Moderate PLID: regular physiotherapy is needed.\n");
+        printf("1. Moderate condition: regular physiotherapy is needed.\n");
     } 
     else {
-        printf("1. Severe PLID: consult a spinal specialist quickly.\n");
+        printf("1. Severe condition: consult a spinal specialist quickly.\n");
     }
 
-    if (bmi < 18.5) {
+    if (bmi < 18.0) {
         printf("2. Low BMI may reduce muscle support for spine.\n");
         printf("3. Improve nutrition and core-strength exercises.\n");
     } 
@@ -99,33 +98,33 @@ void PlidGuidance(int severity, float bmi) {
     printf("9. Seek urgent care if there is leg weakness, numbness, or bladder issues.\n");
 
     if (severity == 1) {
-        printf("10. Re-check in 4-6 weeks if pain does not improve.\n");
+        printf("10. Re-check in 4-6 weeks if pain does not improve.\n\n");
     } 
     else if (severity == 2) {
-        printf("10. Re-check in 2-4 weeks and track pain score daily.\n");
+        printf("10. Re-check in 2-4 weeks and track pain score daily.\n\n");
     } 
     else {
-        printf("10. Keep specialist appointments and follow treatment strictly.\n");
+        printf("10. Keep specialist appointments and follow treatment strictly.\n\n");
     }
 }
 
 void addPatient() {
-    char name[50];
     int age;
-    char gender[20];
-    char discLevel[20];
     int severity;
-    char severityText[20];
     float height;
     float weight;
     float bmi;
     float heightMeters;
+    char name[50];
+    char gender[20];
+    char discLevel[20];
+    char severityText[20];
     char bmiText[20];
     FILE *fp;
 
-    printf("\n--------------------------------------------\n");
-    printf("ADD NEW PATIENT\n");
-    printf("--------------------------------------------\n");
+    printf("\n--------------------------------------------------\n");
+    printf("Add New Patient\n");
+    printf("--------------------------------------------------\n");
 
     printf("Name: ");
     scanf(" %[^\n]", name);
@@ -136,16 +135,16 @@ void addPatient() {
     printf("Gender (M/F): ");
     scanf(" %s", gender);
 
-    printf("Disc Level (e.g. L4-L5): ");
+    printf("Disc Level (e.g. L1-L2, L2-L3): ");
     scanf(" %s", discLevel);
 
-    printf("Severity (1=Mild, 2=Moderate, 3=Severe): ");
+    printf("Severity (1 = Mild, 2 = Moderate, 3 = Severe): ");
     scanf("%d", &severity);
     
     printf("Height in feet (e.g. 5.7): ");
     scanf("%f", &height);
     
-    printf("Weight in kg (e.g. 68): ");
+    printf("Weight in kg: ");
     scanf("%f", &weight);
     
     heightMeters = height * 0.3048;
@@ -161,7 +160,7 @@ void addPatient() {
         strcpy(severityText, "Severe");
     }
 
-    if (bmi < 18.5) {
+    if (bmi < 18.0) {
         strcpy(bmiText, "Underweight");
     } 
     else if (bmi < 25.0) {
@@ -175,22 +174,15 @@ void addPatient() {
     }
 
     fp = fopen(DATA_FILE, "a");
-    if (fp == NULL) {
-        printf("\nERROR: Could not open file.\n");
-        return;
-    }
-
-    fprintf(fp, "--------------------------------------------\n");
     fprintf(fp, "Name: %s\n", name);
     fprintf(fp, "Age: %d\n", age);
     fprintf(fp, "Gender: %s\n", gender);
     fprintf(fp, "Disc Level: %s\n", discLevel);
     fprintf(fp, "Severity: %s\n", severityText);
-    fprintf(fp, "BMI: %.2f (%s)\n", bmi, bmiText);
-    fprintf(fp, "--------------------------------------------\n\n");
+    fprintf(fp, "BMI: %.2f (%s)\n\n", bmi, bmiText);
     fclose(fp);
 
-    printf("\nPatient saved successfully!\n");
+    printf("\nPatient's data saved successfully!\n");
     PlidGuidance(severity, bmi);
 }
 
@@ -199,19 +191,13 @@ void viewPatients() {
     FILE *fp;
 
     fp = fopen(DATA_FILE, "r");
-    if (fp == NULL) {
-        printf("\nNo records found. Add a patient first.\n");
-        return;
-    }
+    printf("\n--------------------------------------------------\n");
+    printf("All Patient Records\n");
+    printf("--------------------------------------------------\n");
 
-    printf("\n--------------------------------------------\n");
-    printf("ALL PATIENT RECORDS\n");
-    printf("--------------------------------------------\n");
-
-    while (fgets(line, sizeof(line), fp) != NULL) {
+    while (fgets(line, sizeof(line), fp)) {
         printf("%s", line);
     }
-
     fclose(fp);
 }
 
@@ -236,10 +222,10 @@ int main() {
             aboutPlid();
             break;
         case 5:
-            printf("\nGoodbye!\n");
+            printf("\nTake care & stay connected.\n");
             break;
         default:
-            printf("\nInvalid choice. Please enter 1, 2, 3, 4, or 5.\n");
+            printf("\nInvalid choice.\n");
     }
 
     return 0;
