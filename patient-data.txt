@@ -1,14 +1,14 @@
-Name: Q
-Age: 12
+Name: Ron
+Age: 40
 Gender: M
-Disc Level: L2
-Severity: Severe
-BMI: 19.38 (Normal)
-
-Name: L
-Age: 34
-Gender: M
-Disc Level: L4
+Disc Level: L1-L2
 Severity: Moderate
-BMI: 27.99 (Overweight)
+BMI: 21.35 (Normal)
+
+Name: Jon
+Age: 30
+Gender: M
+Disc Level: L3-L4
+Severity: Severe
+BMI: 21.65 (Normal)
 
