@@ -36,7 +36,7 @@ void aboutPlid() {
     printf("5. Family history of spine problems\n");
 }
 
-void printPlidGuidance(int severity, float bmi) {
+void PlidGuidance(int severity, float bmi) {
     printf("\nPLID Guidance:\n");
 
     if (severity == 1) {
@@ -177,7 +177,7 @@ void addPatient() {
     fclose(fp);
 
     printf("\nPatient saved successfully!\n");
-    printPlidGuidance(severity, bmi);
+    PlidGuidance(severity, bmi);
 }
 
 void viewPatients() {

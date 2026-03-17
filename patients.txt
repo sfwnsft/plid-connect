@@ -84,3 +84,12 @@ Severity: Moderate
 BMI: 20.25 (Normal)
 --------------------------------------------
 
+--------------------------------------------
+Name: Robin
+Age: 40
+Gender: F
+Disc Level: L1
+Severity: Mild
+BMI: 15.46 (Underweight)
+--------------------------------------------
+
