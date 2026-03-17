@@ -5,12 +5,13 @@
 
 void showMenu() {
     printf("--------------------------------------------\n");
-    printf("PLID Patient Management System\n");
+    printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------\n");
     printf("1. Add New Patient\n");
-    printf("2. View All Patients\n");
-    printf("3. About PLID\n");
-    printf("4. Exit\n");
+    printf("2. View Patient Records\n");
+    printf("3. Doctor Recommendations\n");
+    printf("4. About PLID\n");
+    printf("5. Exit\n");
     printf("--------------------------------------------\n");
 }
 
@@ -34,6 +35,14 @@ void aboutPlid() {
     printf("3. Weak core and back muscles\n");
     printf("4. Smoking and low physical activity\n");
     printf("5. Family history of spine problems\n");
+}
+
+void docRecom() {
+    printf("\n--------------------------------------------\n");
+    printf("Doctor Recommendations\n");
+    printf("--------------------------------------------\n");
+    printf("1. Dr. Shah Alam, MBBS, BSMRMU\n");
+    printf("2. Dr. Nazrul Islam Rony, MBBS, DMC\n\n");
 }
 
 void PlidGuidance(int severity, float bmi) {
@@ -217,9 +226,12 @@ int main(void) {
                 viewPatients();
                 break;
             case 3:
-                aboutPlid();
+                docRecom();
                 break;
             case 4:
+                aboutPlid();
+                break;
+            case 5:
                 printf("\nGoodbye!\n");
                 break;
             default:
