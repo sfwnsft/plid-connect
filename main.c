@@ -213,39 +213,29 @@ void viewPatients() {
 int main(void) {
     int choice;
 
-    do {
-        showMenu();
-        printf("Your choice: ");
-        scanf("%d", &choice);
+    showMenu();
+    printf("Your choice: ");
+    scanf("%d", &choice);
 
-        switch (choice) {
-            case 1:
-                addPatient();
-                break;
-            case 2:
-                viewPatients();
-                break;
-            case 3:
-                docRecom();
-                break;
-            case 4:
-                aboutPlid();
-                break;
-            case 5:
-                printf("\nGoodbye!\n");
-                break;
-            default:
-                printf("\nInvalid choice. Please enter 1, 2, 3, or 4.\n");
-        }
-
-        if (choice != 4) {
-            printf("\nPress Enter to continue...");
-            while (getchar() != '\n');
-            getchar();
-            printf("\n");
-        }
-
-    } while (choice != 4);
+    switch (choice) {
+        case 1:
+            addPatient();
+            break;
+        case 2:
+            viewPatients();
+            break;
+        case 3:
+            docRecom();
+            break;
+        case 4:
+            aboutPlid();
+            break;
+        case 5:
+            printf("\nGoodbye!\n");
+            break;
+        default:
+            printf("\nInvalid choice. Please enter 1, 2, 3, 4, or 5.\n");
+    }
 
     return 0;
 }
