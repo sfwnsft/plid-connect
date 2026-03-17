@@ -7,17 +7,17 @@ void showMenu() {
     printf("--------------------------------------------\n");
     printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------\n");
-    printf("1. Add New Patient\n");
+    printf("1. Add a New Patient\n");
     printf("2. View Patient Records\n");
     printf("3. Doctor Recommendations\n");
-    printf("4. About PLID\n");
+    printf("4. About PLID & PLID Connect\n");
     printf("5. Exit\n");
     printf("--------------------------------------------\n");
 }
 
 void aboutPlid() {
     printf("\n--------------------------------------------\n");
-    printf("ABOUT PLID\n");
+    printf("About PLID\n");
     printf("--------------------------------------------\n");
     printf("PLID means Prolapsed Lumbar Intervertebral Disc.\n");
     printf("It happens when a disc in the lower back moves out\n");
@@ -27,14 +27,20 @@ void aboutPlid() {
     printf("1. Repeated heavy lifting with poor posture\n");
     printf("2. Sudden twisting or bending movements\n");
     printf("3. Age-related disc wear and tear\n");
-    printf("4. Back injury or accident\n\n");
+    printf("4. Back injury or accident\n");
 
     printf("Risk Factors:\n");
-    printf("1. Overweight or obesity (high BMI)\n");
+    printf("1. Overweight or obesity\n");
     printf("2. Long hours of sitting\n");
     printf("3. Weak core and back muscles\n");
     printf("4. Smoking and low physical activity\n");
     printf("5. Family history of spine problems\n");
+
+    printf("\n--------------------------------------------\n");
+    printf("About PLID Connect\n");
+    printf("--------------------------------------------\n");
+    printf("PLID Connect is a solo project developed & maintained by Safwan Safat.\n");
+    printf("It takes the user's data with consent and gives doctor recommendations, guidance, and healthcare tips based on the data.\n\n");
 }
 
 void docRecom() {
@@ -210,7 +216,7 @@ void viewPatients() {
     fclose(fp);
 }
 
-int main(void) {
+int main() {
     int choice;
 
     showMenu();
