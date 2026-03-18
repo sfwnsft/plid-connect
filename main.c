@@ -26,14 +26,14 @@ void aboutPlid() {
     printf("1. Repeated heavy lifting with poor posture\n");
     printf("2. Sudden twisting or bending movements\n");
     printf("3. Age-related disc wear and tear\n");
-    printf("4. Back injury or accident\n");
+    printf("4. Back injury or accident\n\n");
 
     printf("Risk Factors:\n");
     printf("1. Overweight or obesity\n");
     printf("2. Long duration of sitting\n");
     printf("3. Weak core and back muscles\n");
     printf("4. Smoking and low physical activity\n");
-    printf("5. Family history of spine problems\n");
+    printf("5. Family history of spine problems\n\n");
 
     printf("\n--------------------------------------------------\n");
     printf("About PLID Connect\n");
