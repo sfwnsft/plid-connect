@@ -12,3 +12,24 @@ Disc Level: L3-L4
 Severity: Severe
 BMI: 21.65 (Normal)
 
+Name: Adin
+Age: 45
+Gender: M
+Disc Level: L4-L5-S1
+Severity: Moderate
+BMI: 22.31 (Normal)
+
+Name: Josh
+Age: 45
+Gender: M
+Disc Level: L4-L5-S1
+Severity: Moderate
+BMI: 22.40 (Normal)
+
+Name: Ron
+Age: 78
+Gender: M
+Disc Level: L2-L3
+Severity: Mild
+BMI: 23.00 (Normal)
+

@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DATA_FILE "patient-data.txt"
-
-void showMenu() {
+void showMenu() { 
     printf("--------------------------------------------------\n");
     printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------------\n");
@@ -51,7 +49,6 @@ void docRecom() {
 }
 
 void PlidGuidance(int severity, float bmi) {
-    
     printf("\nGuidance:\n");
 
     if (severity == 1) {
@@ -173,7 +170,7 @@ void addPatient() {
         strcpy(bmiText, "Obese");
     }
 
-    fp = fopen(DATA_FILE, "a");
+    fp = fopen("patient-data.txt", "a");
     fprintf(fp, "Name: %s\n", name);
     fprintf(fp, "Age: %d\n", age);
     fprintf(fp, "Gender: %s\n", gender);
@@ -190,7 +187,7 @@ void viewPatients() {
     char line[200];
     FILE *fp;
 
-    fp = fopen(DATA_FILE, "r");
+    fp = fopen("patient-data.txt", "r");
     printf("\n--------------------------------------------------\n");
     printf("All Patient Records\n");
     printf("--------------------------------------------------\n");
