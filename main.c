@@ -132,7 +132,7 @@ void addPatient() {
     printf("Gender (M/F): ");
     scanf("%s", gender);
 
-    printf("Disc Level (e.g. L1-L2, L2-L3): ");
+    printf("Disc Level (e.g. L1-L2, L2-L3, L4-L5, L4-S1): ");
     scanf("%s", discLevel);
 
     printf("Severity (1 = Mild, 2 = Moderate, 3 = Severe): ");
