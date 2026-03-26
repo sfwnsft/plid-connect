@@ -47,3 +47,17 @@ Disc Level: L1-L2
 Severity: Severe
 BMI: 17.24 (Underweight)
 
+Name: John
+Age: 45
+Gender: M
+Disc Level: L1-L2
+Severity: Mild
+BMI: 22.15 (Normal)
+
+Name: Rick
+Age: 30
+Gender: M
+Disc Level: L1-L2
+Severity: Moderate
+BMI: 20.59 (Normal)
+

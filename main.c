@@ -123,17 +123,17 @@ void addPatient() {
     printf("Add New Patient\n");
     printf("--------------------------------------------------\n");
 
-    printf("Name: ");
-    scanf(" %[^\n]", name);
+    printf("Nickname: ");
+    scanf("%s", name);
 
     printf("Age: ");
     scanf("%d", &age);
     
     printf("Gender (M/F): ");
-    scanf(" %s", gender);
+    scanf("%s", gender);
 
     printf("Disc Level (e.g. L1-L2, L2-L3): ");
-    scanf(" %s", discLevel);
+    scanf("%s", discLevel);
 
     printf("Severity (1 = Mild, 2 = Moderate, 3 = Severe): ");
     scanf("%d", &severity);
@@ -171,12 +171,10 @@ void addPatient() {
     }
 
     dataFile = fopen("patient-data.txt", "a");
-    
     if (dataFile == NULL) {
         printf("Error: Could not open data file for writing.\n\n");
         return;
     }
-
     fprintf(dataFile, "Name: %s\n", name);
     fprintf(dataFile, "Age: %d\n", age);
     fprintf(dataFile, "Gender: %s\n", gender);
