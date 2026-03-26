@@ -6,10 +6,9 @@ void showMenu() {
     printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
-    printf("2. View Patient Records\n");
-    printf("3. Doctor Recommendations\n");
-    printf("4. About PLID & PLID Connect\n");
-    printf("5. Exit\n");
+    printf("2. Doctor Recommendations\n");
+    printf("3. About PLID & PLID Connect\n");
+    printf("4. Exit\n");
     printf("--------------------------------------------------\n");
 }
 
@@ -44,21 +43,22 @@ void docRecom() {
     printf("\n--------------------------------------------------\n");
     printf("Doctor Recommendations\n");
     printf("--------------------------------------------------\n");
-    printf("1. Dr. Shah Alam, MBBS, BSMRMU\n");
-    printf("2. Dr. Nazrul Islam Rony, MBBS, DMC\n\n");
+    printf("1. Dr. Shah Alam, MBBS (BSMRMU)\n");
+    printf("2. Dr. Nazrul Islam, MBBS (DMC)\n");
+    printf("3. Dr. Irin Akter, MBBS (RMC)\n\n");
 }
 
 void PlidGuidance(int severity, float bmi) {
-    printf("\nGuidance:\n");
+    printf("\nObservation & Guidance:\n");
 
     if (severity == 1) {
-        printf("1. Mild condition: start with rest and physiotherapy.\n");
+        printf("1. Mild condition: Start with rest and physiotherapy.\n");
     } 
     else if (severity == 2) {
-        printf("1. Moderate condition: regular physiotherapy is needed.\n");
+        printf("1. Moderate condition: Regular physiotherapy is needed.\n");
     } 
     else {
-        printf("1. Severe condition: consult a spinal specialist quickly.\n");
+        printf("1. Severe condition: Consult a spinal specialist quickly.\n");
     }
 
     if (bmi < 18.0) {
@@ -117,7 +117,7 @@ void addPatient() {
     char discLevel[20];
     char severityText[20];
     char bmiText[20];
-    FILE *fp;
+    FILE *dataFile;
 
     printf("\n--------------------------------------------------\n");
     printf("Add New Patient\n");
@@ -170,32 +170,17 @@ void addPatient() {
         strcpy(bmiText, "Obese");
     }
 
-    fp = fopen("patient-data.txt", "a");
-    fprintf(fp, "Name: %s\n", name);
-    fprintf(fp, "Age: %d\n", age);
-    fprintf(fp, "Gender: %s\n", gender);
-    fprintf(fp, "Disc Level: %s\n", discLevel);
-    fprintf(fp, "Severity: %s\n", severityText);
-    fprintf(fp, "BMI: %.2f (%s)\n\n", bmi, bmiText);
-    fclose(fp);
+    dataFile = fopen("patient-data.txt", "a");
+    fprintf(dataFile, "Name: %s\n", name);
+    fprintf(dataFile, "Age: %d\n", age);
+    fprintf(dataFile, "Gender: %s\n", gender);
+    fprintf(dataFile, "Disc Level: %s\n", discLevel);
+    fprintf(dataFile, "Severity: %s\n", severityText);
+    fprintf(dataFile, "BMI: %.2f (%s)\n\n", bmi, bmiText);
+    fclose(dataFile);
 
     printf("\nPatient's data saved successfully!\n");
     PlidGuidance(severity, bmi);
-}
-
-void viewPatients() {
-    char line[200];
-    FILE *fp;
-
-    fp = fopen("patient-data.txt", "r");
-    printf("\n--------------------------------------------------\n");
-    printf("All Patient Records\n");
-    printf("--------------------------------------------------\n");
-
-    while (fgets(line, sizeof(line), fp)) {
-        printf("%s", line);
-    }
-    fclose(fp);
 }
 
 int main() {
@@ -210,20 +195,16 @@ int main() {
             addPatient();
             break;
         case 2:
-            viewPatients();
-            break;
-        case 3:
             docRecom();
             break;
-        case 4:
+        case 3:
             aboutPlid();
             break;
-        case 5:
-            printf("\nTake care & stay connected.\n");
+        case 4:
+            printf("\nTake care & stay connected with PLID Connect.\n");
             break;
         default:
             printf("\nInvalid choice.\n");
     }
-
     return 0;
 }

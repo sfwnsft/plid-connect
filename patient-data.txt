@@ -33,3 +33,17 @@ Disc Level: L2-L3
 Severity: Mild
 BMI: 23.00 (Normal)
 
+Name: Tom
+Age: 34
+Gender: M
+Disc Level: L3-L4
+Severity: Severe
+BMI: 17.60 (Underweight)
+
+Name: Eliot
+Age: 32
+Gender: F
+Disc Level: L1-L2
+Severity: Severe
+BMI: 17.24 (Underweight)
+
