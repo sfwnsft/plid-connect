@@ -1,18 +1,20 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 struct patient {
+    char username[100];
     int age;
     int severity;
     float height;
     float weight;
     float bmi;
     float heightMeters;
-    char name[50];
-    char gender[20];
-    char discLevel[20];
-    char severityText[20];
-    char bmiText[20];
+    char name[100];
+    char gender[50];
+    char discLevel[50];
+    char severityText[50];
+    char bmiText[50];
 };
 
 void showMenu() { 
@@ -21,9 +23,10 @@ void showMenu() {
     printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
     printf("2. View Patient Records\n");
-    printf("3. Doctor Recommendations\n");
-    printf("4. About PLID & PLID Connect\n");
-    printf("5. Exit\n");
+    printf("3. Search Your Records\n");
+    printf("4. Doctor Recommendations\n");
+    printf("5. About PLID & PLID Connect\n");
+    printf("6. Exit\n");
     printf("--------------------------------------------------\n");
 }
 
@@ -82,6 +85,52 @@ void viewPatient() {
     }
 
     fclose(dataFile);
+}
+
+// This function lets a patient view ONLY their own data using their username
+void viewPatientDataById() {
+    char username[100];
+    FILE *dataFile;
+    char line[100];
+    int found = 0;
+    int inPatientRecord = 0;
+
+    printf("\n--------------------------------------------------\n");
+    printf("View Your Data\n");
+    printf("--------------------------------------------------\n");
+    
+    printf("Enter your Username: ");
+    scanf("%s", username);
+
+    dataFile = fopen("patient-data.txt", "r");
+    if (dataFile == NULL) {
+        printf("No patient records found.\n\n");
+        return;
+    }
+
+    while (fgets(line, sizeof(line), dataFile)) {
+        if (inPatientRecord) {
+            printf("%s", line);
+            if (strlen(line) == 1 && line[0] == '\n') {
+                inPatientRecord = 0;
+            }
+        } 
+        else if (strstr(line, "Username: ") && strstr(line, username)) {
+            found = 1;
+            inPatientRecord = 1;
+            printf("\n------ Your Patient Record ------\n");
+            printf("%s", line); 
+        }
+    }
+
+    fclose(dataFile);
+
+    if (!found) {
+        printf("No patient record found with username: %s\n", username);
+        printf("Please check your username and try again.\n\n");
+    } else {
+        printf("----------------------------------\n\n");
+    }
 }
 
 void PlidGuidance(int severity, float bmi) {
@@ -149,6 +198,9 @@ void addPatient() {
     printf("Add New Patient\n");
     printf("--------------------------------------------------\n");
 
+    printf("Username (e.g. john123): ");
+    scanf("%s", p.username);
+
     printf("Nickname: ");
     scanf("%s", p.name);
 
@@ -201,6 +253,8 @@ void addPatient() {
         printf("Error: Could not open data file for writing.\n\n");
         return;
     }
+    
+    fprintf(dataFile, "Username: %s\n", p.username);
     fprintf(dataFile, "Name: %s\n", p.name);
     fprintf(dataFile, "Age: %d\n", p.age);
     fprintf(dataFile, "Gender: %s\n", p.gender);
@@ -210,6 +264,7 @@ void addPatient() {
     fclose(dataFile);
 
     printf("\nPatient's data saved successfully!\n");
+    printf("Your Username is: %s (Use this to view your data later)\n", p.username);
     PlidGuidance(p.severity, p.bmi);
 }
 
@@ -228,12 +283,15 @@ int main() {
             viewPatient();
             break;
         case 3:
-            docRecom();
+            viewPatientDataById();
             break;
         case 4:
-            aboutPlid();
+            docRecom();
             break;
         case 5:
+            aboutPlid();
+            break;
+        case 6:
             printf("\nTake care & stay connected with PLID Connect.\n");
             break;
         default:
