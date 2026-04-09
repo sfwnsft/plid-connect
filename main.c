@@ -1,14 +1,29 @@
 #include <stdio.h>
 #include <string.h>
 
+struct patient {
+    int age;
+    int severity;
+    float height;
+    float weight;
+    float bmi;
+    float heightMeters;
+    char name[50];
+    char gender[20];
+    char discLevel[20];
+    char severityText[20];
+    char bmiText[20];
+};
+
 void showMenu() { 
     printf("--------------------------------------------------\n");
     printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
-    printf("2. Doctor Recommendations\n");
-    printf("3. About PLID & PLID Connect\n");
-    printf("4. Exit\n");
+    printf("2. View Patient Records\n");
+    printf("3. Doctor Recommendations\n");
+    printf("4. About PLID & PLID Connect\n");
+    printf("5. Exit\n");
     printf("--------------------------------------------------\n");
 }
 
@@ -46,6 +61,27 @@ void docRecom() {
     printf("1. Dr. Shah Alam, MBBS (BSMRMU)\n");
     printf("2. Dr. Nazrul Islam, MBBS (DMC)\n");
     printf("3. Dr. Irin Akter, MBBS (RMC)\n\n");
+}
+
+void viewPatient() {
+    FILE *dataFile;
+    char line[100];
+
+    printf("\n--------------------------------------------------\n");
+    printf("Patient Records\n");
+    printf("--------------------------------------------------\n");
+
+    dataFile = fopen("patient-data.txt", "r");
+    if (dataFile == NULL) {
+        printf("No patient records found.\n\n");
+        return;
+    }
+
+    while (fgets(line, sizeof(line), dataFile)) {
+        printf("%s", line);
+    }
+
+    fclose(dataFile);
 }
 
 void PlidGuidance(int severity, float bmi) {
@@ -106,17 +142,7 @@ void PlidGuidance(int severity, float bmi) {
 }
 
 void addPatient() {
-    int age;
-    int severity;
-    float height;
-    float weight;
-    float bmi;
-    float heightMeters;
-    char name[50];
-    char gender[20];
-    char discLevel[20];
-    char severityText[20];
-    char bmiText[20];
+    struct patient p = {0};
     FILE *dataFile;
 
     printf("\n--------------------------------------------------\n");
@@ -124,50 +150,50 @@ void addPatient() {
     printf("--------------------------------------------------\n");
 
     printf("Nickname: ");
-    scanf("%s", name);
+    scanf("%s", p.name);
 
     printf("Age: ");
-    scanf("%d", &age);
+    scanf("%d", &p.age);
     
     printf("Gender (M/F): ");
-    scanf("%s", gender);
+    scanf("%s", p.gender);
 
     printf("Disc Level (e.g. L1-L2, L2-L3, L4-L5, L4-S1): ");
-    scanf("%s", discLevel);
+    scanf("%s", p.discLevel);
 
     printf("Severity (1 = Mild, 2 = Moderate, 3 = Severe): ");
-    scanf("%d", &severity);
+    scanf("%d", &p.severity);
     
     printf("Height in feet (e.g. 5.7): ");
-    scanf("%f", &height);
+    scanf("%f", &p.height);
     
     printf("Weight in kg: ");
-    scanf("%f", &weight);
+    scanf("%f", &p.weight);
     
-    heightMeters = height * 0.3048;
-    bmi = weight / (heightMeters * heightMeters);
+    p.heightMeters = p.height * 0.3048;
+    p.bmi = p.weight / (p.heightMeters * p.heightMeters);
 
-    if (severity == 1) {
-        strcpy(severityText, "Mild");
+    if (p.severity == 1) {
+        strcpy(p.severityText, "Mild");
     } 
-    else if (severity == 2) {
-        strcpy(severityText, "Moderate");
+    else if (p.severity == 2) {
+        strcpy(p.severityText, "Moderate");
     } 
     else {
-        strcpy(severityText, "Severe");
+        strcpy(p.severityText, "Severe");
     }
 
-    if (bmi < 18.0) {
-        strcpy(bmiText, "Underweight");
+    if (p.bmi < 18.0) {
+        strcpy(p.bmiText, "Underweight");
     } 
-    else if (bmi < 25.0) {
-        strcpy(bmiText, "Normal");
+    else if (p.bmi < 25.0) {
+        strcpy(p.bmiText, "Normal");
     } 
-    else if (bmi < 30.0) {
-        strcpy(bmiText, "Overweight");
+    else if (p.bmi < 30.0) {
+        strcpy(p.bmiText, "Overweight");
     } 
     else {
-        strcpy(bmiText, "Obese");
+        strcpy(p.bmiText, "Obese");
     }
 
     dataFile = fopen("patient-data.txt", "a");
@@ -175,16 +201,16 @@ void addPatient() {
         printf("Error: Could not open data file for writing.\n\n");
         return;
     }
-    fprintf(dataFile, "Name: %s\n", name);
-    fprintf(dataFile, "Age: %d\n", age);
-    fprintf(dataFile, "Gender: %s\n", gender);
-    fprintf(dataFile, "Disc Level: %s\n", discLevel);
-    fprintf(dataFile, "Severity: %s\n", severityText);
-    fprintf(dataFile, "BMI: %.2f (%s)\n\n", bmi, bmiText);
+    fprintf(dataFile, "Name: %s\n", p.name);
+    fprintf(dataFile, "Age: %d\n", p.age);
+    fprintf(dataFile, "Gender: %s\n", p.gender);
+    fprintf(dataFile, "Disc Level: %s\n", p.discLevel);
+    fprintf(dataFile, "Severity: %s\n", p.severityText);
+    fprintf(dataFile, "BMI: %.2f (%s)\n\n", p.bmi, p.bmiText);
     fclose(dataFile);
 
     printf("\nPatient's data saved successfully!\n");
-    PlidGuidance(severity, bmi);
+    PlidGuidance(p.severity, p.bmi);
 }
 
 int main() {
@@ -199,12 +225,15 @@ int main() {
             addPatient();
             break;
         case 2:
-            docRecom();
+            viewPatient();
             break;
         case 3:
-            aboutPlid();
+            docRecom();
             break;
         case 4:
+            aboutPlid();
+            break;
+        case 5:
             printf("\nTake care & stay connected with PLID Connect.\n");
             break;
         default:
