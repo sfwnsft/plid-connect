@@ -17,19 +17,20 @@ struct patient {
     char bmiText[50];
 };
 
+// Print the main menu options
 void showMenu() { 
     printf("--------------------------------------------------\n");
     printf("Welcome to PLID Connect\n");
     printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
-    printf("2. View Patient Records\n");
-    printf("3. Search Your Records\n");
-    printf("4. Doctor Recommendations\n");
-    printf("5. About PLID & PLID Connect\n");
-    printf("6. Exit\n");
+    printf("2. Search Your Records\n");
+    printf("3. Doctor Recommendations\n");
+    printf("4. About PLID & PLID Connect\n");
+    printf("5. Exit\n");
     printf("--------------------------------------------------\n");
 }
 
+// Show background info about PLID and this app
 void aboutPlid() {
     printf("\n--------------------------------------------------\n");
     printf("About PLID\n");
@@ -57,6 +58,7 @@ void aboutPlid() {
     printf("It takes the user's data with consent and gives doctor recommendations, guidance, and healthcare tips based on the data.\n\n");
 }
 
+// Show doctor recommendations list
 void docRecom() {
     printf("\n--------------------------------------------------\n");
     printf("Doctor Recommendations\n");
@@ -66,28 +68,7 @@ void docRecom() {
     printf("3. Dr. Irin Akter, MBBS (RMC)\n\n");
 }
 
-void viewPatient() {
-    FILE *dataFile;
-    char line[100];
-
-    printf("\n--------------------------------------------------\n");
-    printf("Patient Records\n");
-    printf("--------------------------------------------------\n");
-
-    dataFile = fopen("patient-data.txt", "r");
-    if (dataFile == NULL) {
-        printf("No patient records found.\n\n");
-        return;
-    }
-
-    while (fgets(line, sizeof(line), dataFile)) {
-        printf("%s", line);
-    }
-
-    fclose(dataFile);
-}
-
-// This function lets a patient view ONLY their own data using their username
+// Find and display a single patient's record by username
 void viewPatientDataById() {
     char username[100];
     FILE *dataFile;
@@ -99,15 +80,18 @@ void viewPatientDataById() {
     printf("View Your Data\n");
     printf("--------------------------------------------------\n");
     
+    // Ask for username to match in the file
     printf("Enter your Username: ");
     scanf("%s", username);
 
+    // Open the data file for reading
     dataFile = fopen("patient-data.txt", "r");
     if (dataFile == NULL) {
         printf("No patient records found.\n\n");
         return;
     }
 
+    // Read file line by line and print only the matching record
     while (fgets(line, sizeof(line), dataFile)) {
         if (inPatientRecord) {
             printf("%s", line);
@@ -129,10 +113,11 @@ void viewPatientDataById() {
         printf("No patient record found with username: %s\n", username);
         printf("Please check your username and try again.\n\n");
     } else {
-        printf("----------------------------------\n\n");
+        printf("--------------------------------------------------\n\n");
     }
 }
 
+// Print guidance based on severity and BMI
 void PlidGuidance(int severity, float bmi) {
     printf("\nObservation & Guidance:\n");
 
@@ -190,6 +175,7 @@ void PlidGuidance(int severity, float bmi) {
     }
 }
 
+// Collect user input, calculate BMI, and save a new patient record
 void addPatient() {
     struct patient p = {0};
     FILE *dataFile;
@@ -198,6 +184,7 @@ void addPatient() {
     printf("Add New Patient\n");
     printf("--------------------------------------------------\n");
 
+    // Basic patient info
     printf("Username (e.g. john123): ");
     scanf("%s", p.username);
 
@@ -222,6 +209,7 @@ void addPatient() {
     printf("Weight in kg: ");
     scanf("%f", &p.weight);
     
+    // BMI calculation
     p.heightMeters = p.height * 0.3048;
     p.bmi = p.weight / (p.heightMeters * p.heightMeters);
 
@@ -248,6 +236,7 @@ void addPatient() {
         strcpy(p.bmiText, "Obese");
     }
 
+    // Append the new record to the data file
     dataFile = fopen("patient-data.txt", "a");
     if (dataFile == NULL) {
         printf("Error: Could not open data file for writing.\n\n");
@@ -268,34 +257,34 @@ void addPatient() {
     PlidGuidance(p.severity, p.bmi);
 }
 
+// App entry point and main loop
 int main() {
     int choice;
 
-    showMenu();
-    printf("Your choice: ");
-    scanf("%d", &choice);
-
-    switch (choice) {
-        case 1:
-            addPatient();
-            break;
-        case 2:
-            viewPatient();
-            break;
-        case 3:
-            viewPatientDataById();
-            break;
-        case 4:
-            docRecom();
-            break;
-        case 5:
-            aboutPlid();
-            break;
-        case 6:
-            printf("\nTake care & stay connected with PLID Connect.\n");
-            break;
-        default:
-            printf("\nInvalid choice.\n");
+    while (1) {
+        showMenu();
+        printf("Your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                addPatient();
+                break;
+            case 2:
+                viewPatientDataById();
+                break;
+            case 3:
+                docRecom();
+                break;
+            case 4:
+                aboutPlid();
+                break;
+            case 5:
+                printf("\nTake care & stay connected with PLID Connect.\n");
+                return 0;
+            default:
+                printf("\nInvalid choice.\n");
+        }
     }
+
     return 0;
 }
