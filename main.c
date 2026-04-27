@@ -17,6 +17,203 @@ struct patient {
     char bmiText[50];
 };
 
+struct user {
+    char username[100];
+    char email[100];
+    char password[100];
+};
+
+// Simple password hashing function (basic obfuscation for demo)
+void hashPassword(char *password, char *hashed) {
+    strcpy(hashed, "");
+    for (int i = 0; password[i] != '\0'; i++) {
+        char buffer[10];
+        sprintf(buffer, "%d", (int)password[i] + 7);
+        strcat(hashed, buffer);
+    }
+}
+
+// Verify password by comparing hashes
+int verifyPassword(char *password, char *hashed) {
+    char computedHash[500];
+    hashPassword(password, computedHash);
+    return strcmp(computedHash, hashed) == 0;
+}
+
+// Display appealing homepage with information about PLID Connect
+void displayHomepage() {
+    printf("\n");
+    printf("==================================================\n");
+    printf("==================================================\n");
+    printf("           WELCOME TO PLID CONNECT\n");
+    printf("==================================================\n");
+    printf("==================================================\n\n");
+
+    printf("What is PLID?\n");
+    printf("-------------------------------------------------\n");
+    printf("PLID stands for Prolapsed Lumbar Intervertebral\n");
+    printf("Disc - a condition where a disc in the lower back\n");
+    printf("moves out of place, pressing nearby nerves.\n\n");
+
+    printf("Why PLID Connect?\n");
+    printf("-------------------------------------------------\n");
+    printf("PLID Connect is your personal healthcare companion\n");
+    printf("that helps you:\n\n");
+    printf("  • Track your patient medical records securely\n");
+    printf("  • Receive personalized health guidance\n");
+    printf("  • Get expert doctor recommendations\n");
+    printf("  • Monitor your PLID condition progress\n");
+    printf("  • Access BMI and severity assessments\n\n");
+
+    printf("Key Features:\n");
+    printf("-------------------------------------------------\n");
+    printf("  ✓ Secure User Authentication System\n");
+    printf("  ✓ Complete Patient Record Management (CRUD)\n");
+    printf("  ✓ BMI Calculator & Health Analysis\n");
+    printf("  ✓ Personalized Medical Guidance\n");
+    printf("  ✓ Professional Doctor Network\n");
+    printf("  ✓ Privacy-Focused Data Storage\n\n");
+
+    printf("How It Works:\n");
+    printf("-------------------------------------------------\n");
+    printf("  1. Register or Login with your credentials\n");
+    printf("  2. Add your patient medical information\n");
+    printf("  3. Receive personalized guidance based on\n");
+    printf("     your severity level and BMI\n");
+    printf("  4. View, Update, or Manage your records\n");
+    printf("  5. Connect with recommended doctors\n\n");
+
+    printf("Your Health, Our Priority\n");
+    printf("-------------------------------------------------\n");
+    printf("PLID Connect is dedicated to helping you manage\n");
+    printf("your PLID condition with professional guidance,\n");
+    printf("evidence-based recommendations, and a supportive\n");
+    printf("healthcare community.\n\n");
+
+    printf("Developed by: Safwan Safat\n");
+    printf("==================================================\n");
+    printf("Press Enter to continue to authentication...\n");
+    printf("==================================================\n\n");
+    
+    // Wait for user to press Enter
+    char dummy;
+    scanf("%c", &dummy);
+}
+
+// Register a new user
+void registerUser() {
+    struct user newUser;
+    FILE *userFile;
+    char usernameLine[200];
+
+    printf("\n--------------------------------------------------\n");
+    printf("Register New User\n");
+    printf("--------------------------------------------------\n");
+
+    printf("Enter username: ");
+    scanf("%s", newUser.username);
+
+    // Check if username already exists
+    userFile = fopen("users.txt", "r");
+    if (userFile != NULL) {
+        while (fgets(usernameLine, sizeof(usernameLine), userFile)) {
+            if (strstr(usernameLine, "Username: ") && strstr(usernameLine, newUser.username)) {
+                printf("Username already exists. Please choose a different username.\n\n");
+                fclose(userFile);
+                return;
+            }
+        }
+        fclose(userFile);
+    }
+
+    printf("Enter email: ");
+    scanf("%s", newUser.email);
+
+    printf("Enter password: ");
+    scanf("%s", newUser.password);
+
+    // Append new user to users.txt
+    userFile = fopen("users.txt", "a");
+    if (userFile == NULL) {
+        printf("Error: Could not open users file.\n\n");
+        return;
+    }
+
+    char hashedPassword[500];
+    hashPassword(newUser.password, hashedPassword);
+
+    fprintf(userFile, "Username: %s\n", newUser.username);
+    fprintf(userFile, "Email: %s\n", newUser.email);
+    fprintf(userFile, "Password: %s\n\n", hashedPassword);
+    fclose(userFile);
+
+    printf("\nRegistration successful! You can now login with your credentials.\n\n");
+}
+
+// Login user - returns 1 if successful, 0 if failed
+int loginUser(char *loggedInUsername) {
+    char username[100];
+    char password[100];
+    FILE *userFile;
+    char line[200];
+    int found = 0;
+    int passwordMatches = 0;
+    char storedPassword[500];
+
+    printf("\n--------------------------------------------------\n");
+    printf("Login\n");
+    printf("--------------------------------------------------\n");
+
+    printf("Enter username: ");
+    scanf("%s", username);
+
+    printf("Enter password: ");
+    scanf("%s", password);
+
+    userFile = fopen("users.txt", "r");
+    if (userFile == NULL) {
+        printf("No user accounts found. Please register first.\n\n");
+        return 0;
+    }
+
+    // Find user and verify password
+    while (fgets(line, sizeof(line), userFile)) {
+        if (strstr(line, "Username: ") && strstr(line, username)) {
+            found = 1;
+            strcpy(loggedInUsername, username);
+            
+            // Read password line
+            if (fgets(line, sizeof(line), userFile)) {
+                // Skip email line
+            }
+            if (fgets(line, sizeof(line), userFile)) {
+                if (strstr(line, "Password: ")) {
+                    sscanf(line, "Password: %s", storedPassword);
+                    if (verifyPassword(password, storedPassword)) {
+                        passwordMatches = 1;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    fclose(userFile);
+
+    if (!found) {
+        printf("Username not found. Please register first.\n\n");
+        return 0;
+    }
+
+    if (!passwordMatches) {
+        printf("Incorrect password.\n\n");
+        return 0;
+    }
+
+    printf("Login successful! Welcome, %s.\n\n", username);
+    return 1;
+}
+
 // Print the main menu options
 void showMenu() { 
     printf("--------------------------------------------------\n");
@@ -455,7 +652,43 @@ void deletePatient() {
 // App entry point and main loop
 int main() {
     int choice;
+    int authChoice;
+    char loggedInUsername[100];
+    int isLoggedIn = 0;
 
+    // Display homepage on startup
+    displayHomepage();
+
+    // Authentication loop
+    while (!isLoggedIn) {
+        printf("\n--------------------------------------------------\n");
+        printf("PLID Connect - Authentication\n");
+        printf("--------------------------------------------------\n");
+        printf("1. Register\n");
+        printf("2. Login\n");
+        printf("3. Exit\n");
+        printf("--------------------------------------------------\n");
+        printf("Your choice: ");
+        scanf("%d", &authChoice);
+
+        switch (authChoice) {
+            case 1:
+                registerUser();
+                break;
+            case 2:
+                if (loginUser(loggedInUsername)) {
+                    isLoggedIn = 1;
+                }
+                break;
+            case 3:
+                printf("\nThank you for using PLID Connect. Goodbye!\n");
+                return 0;
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    // Main application loop (after successful login)
     while (1) {
         showMenu();
         printf("Your choice: ");
@@ -481,6 +714,7 @@ int main() {
                 break;
             case 7:
                 printf("\nTake care & stay connected with PLID Connect.\n");
+                printf("Logged out as: %s\n\n", loggedInUsername);
                 return 0;
             default:
                 printf("\nInvalid choice.\n");
