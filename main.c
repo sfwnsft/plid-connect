@@ -40,66 +40,6 @@ int verifyPassword(char *password, char *hashed) {
     return strcmp(computedHash, hashed) == 0;
 }
 
-// Display appealing homepage with information about PLID Connect
-void displayHomepage() {
-    printf("\n");
-    printf("==================================================\n");
-    printf("==================================================\n");
-    printf("           WELCOME TO PLID CONNECT\n");
-    printf("==================================================\n");
-    printf("==================================================\n\n");
-
-    printf("What is PLID?\n");
-    printf("-------------------------------------------------\n");
-    printf("PLID stands for Prolapsed Lumbar Intervertebral\n");
-    printf("Disc - a condition where a disc in the lower back\n");
-    printf("moves out of place, pressing nearby nerves.\n\n");
-
-    printf("Why PLID Connect?\n");
-    printf("-------------------------------------------------\n");
-    printf("PLID Connect is your personal healthcare companion\n");
-    printf("that helps you:\n\n");
-    printf("  • Track your patient medical records securely\n");
-    printf("  • Receive personalized health guidance\n");
-    printf("  • Get expert doctor recommendations\n");
-    printf("  • Monitor your PLID condition progress\n");
-    printf("  • Access BMI and severity assessments\n\n");
-
-    printf("Key Features:\n");
-    printf("-------------------------------------------------\n");
-    printf("  ✓ Secure User Authentication System\n");
-    printf("  ✓ Complete Patient Record Management (CRUD)\n");
-    printf("  ✓ BMI Calculator & Health Analysis\n");
-    printf("  ✓ Personalized Medical Guidance\n");
-    printf("  ✓ Professional Doctor Network\n");
-    printf("  ✓ Privacy-Focused Data Storage\n\n");
-
-    printf("How It Works:\n");
-    printf("-------------------------------------------------\n");
-    printf("  1. Register or Login with your credentials\n");
-    printf("  2. Add your patient medical information\n");
-    printf("  3. Receive personalized guidance based on\n");
-    printf("     your severity level and BMI\n");
-    printf("  4. View, Update, or Manage your records\n");
-    printf("  5. Connect with recommended doctors\n\n");
-
-    printf("Your Health, Our Priority\n");
-    printf("-------------------------------------------------\n");
-    printf("PLID Connect is dedicated to helping you manage\n");
-    printf("your PLID condition with professional guidance,\n");
-    printf("evidence-based recommendations, and a supportive\n");
-    printf("healthcare community.\n\n");
-
-    printf("Developed by: Safwan Safat\n");
-    printf("==================================================\n");
-    printf("Press Enter to continue to authentication...\n");
-    printf("==================================================\n\n");
-    
-    // Wait for user to press Enter
-    char dummy;
-    scanf("%c", &dummy);
-}
-
 // Register a new user
 void registerUser() {
     struct user newUser;
@@ -656,13 +596,13 @@ int main() {
     char loggedInUsername[100];
     int isLoggedIn = 0;
 
-    // Display homepage on startup
-    displayHomepage();
-
     // Authentication loop
     while (!isLoggedIn) {
         printf("\n--------------------------------------------------\n");
         printf("PLID Connect - Authentication\n");
+        printf("--------------------------------------------------\n");
+        printf("Manage your PLID condition with personalized\n");
+        printf("health guidance and professional recommendations.\n");
         printf("--------------------------------------------------\n");
         printf("1. Register\n");
         printf("2. Login\n");
