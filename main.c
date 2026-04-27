@@ -24,9 +24,11 @@ void showMenu() {
     printf("--------------------------------------------------\n");
     printf("1. Add a New Patient\n");
     printf("2. Search Your Records\n");
-    printf("3. Doctor Recommendations\n");
-    printf("4. About PLID & PLID Connect\n");
-    printf("5. Exit\n");
+    printf("3. Update Patient Record\n");
+    printf("4. Delete Patient Record\n");
+    printf("5. Doctor Recommendations\n");
+    printf("6. About PLID & PLID Connect\n");
+    printf("7. Exit\n");
     printf("--------------------------------------------------\n");
 }
 
@@ -257,6 +259,199 @@ void addPatient() {
     PlidGuidance(p.severity, p.bmi);
 }
 
+// Update an existing patient's record
+void updatePatient() {
+    char username[100];
+    FILE *inputFile, *tempFile;
+    char line[200];
+    int found = 0;
+    int inTargetRecord = 0;
+    int fieldChoice;
+    char newValue[100];
+
+    printf("\n--------------------------------------------------\n");
+    printf("Update Patient Record\n");
+    printf("--------------------------------------------------\n");
+
+    printf("Enter username to update: ");
+    scanf("%s", username);
+
+    inputFile = fopen("patient-data.txt", "r");
+    if (inputFile == NULL) {
+        printf("No patient records found.\n\n");
+        return;
+    }
+
+    tempFile = fopen("patient-data.txt.tmp", "w");
+    if (tempFile == NULL) {
+        printf("Error: Could not create temporary file.\n\n");
+        fclose(inputFile);
+        return;
+    }
+
+    // First pass: find and display the record
+    while (fgets(line, sizeof(line), inputFile)) {
+        if (strstr(line, "Username: ") && strstr(line, username)) {
+            found = 1;
+            inTargetRecord = 1;
+            printf("\nPatient found! Current record:\n");
+            printf("%s", line);
+            fprintf(tempFile, "%s", line);
+        }
+        else if (inTargetRecord) {
+            printf("%s", line);
+            if (strlen(line) == 1 && line[0] == '\n') {
+                inTargetRecord = 0;
+            }
+            fprintf(tempFile, "%s", line);
+        }
+        else {
+            fprintf(tempFile, "%s", line);
+        }
+    }
+
+    fclose(inputFile);
+
+    if (found) {
+        printf("\nChoose field to update:\n");
+        printf("1. Name\n");
+        printf("2. Age\n");
+        printf("3. Gender\n");
+        printf("4. Disc Level\n");
+        printf("5. Severity\n");
+        printf("Your choice: ");
+        scanf("%d", &fieldChoice);
+
+        printf("Enter new value: ");
+        scanf("%s", newValue);
+
+        // Second pass: update the specific field
+        inputFile = fopen("patient-data.txt", "r");
+        rewind(tempFile);
+        fclose(tempFile);
+        tempFile = fopen("patient-data.txt.tmp", "w");
+        inTargetRecord = 0;
+
+        while (fgets(line, sizeof(line), inputFile)) {
+            if (strstr(line, "Username: ") && strstr(line, username)) {
+                inTargetRecord = 1;
+                fprintf(tempFile, "%s", line);
+            }
+            else if (inTargetRecord) {
+                if (strlen(line) == 1 && line[0] == '\n') {
+                    inTargetRecord = 0;
+                    fprintf(tempFile, "\n");
+                }
+                else if (fieldChoice == 1 && strstr(line, "Name: ")) {
+                    fprintf(tempFile, "Name: %s\n", newValue);
+                }
+                else if (fieldChoice == 2 && strstr(line, "Age: ")) {
+                    fprintf(tempFile, "Age: %s\n", newValue);
+                }
+                else if (fieldChoice == 3 && strstr(line, "Gender: ")) {
+                    fprintf(tempFile, "Gender: %s\n", newValue);
+                }
+                else if (fieldChoice == 4 && strstr(line, "Disc Level: ")) {
+                    fprintf(tempFile, "Disc Level: %s\n", newValue);
+                }
+                else if (fieldChoice == 5 && strstr(line, "Severity: ")) {
+                    fprintf(tempFile, "Severity: %s\n", newValue);
+                }
+                else {
+                    fprintf(tempFile, "%s", line);
+                }
+            }
+            else {
+                fprintf(tempFile, "%s", line);
+            }
+        }
+
+        fclose(inputFile);
+        fclose(tempFile);
+
+        remove("patient-data.txt");
+        rename("patient-data.txt.tmp", "patient-data.txt");
+        printf("\nRecord updated successfully!\n\n");
+    }
+    else {
+        fclose(tempFile);
+        remove("patient-data.txt.tmp");
+        printf("No patient record found with username: %s\n\n", username);
+    }
+}
+
+// Delete a patient's record
+void deletePatient() {
+    char username[100];
+    char confirm;
+    FILE *inputFile, *tempFile;
+    char line[200];
+    int found = 0;
+    int inTargetRecord = 0;
+
+    printf("\n--------------------------------------------------\n");
+    printf("Delete Patient Record\n");
+    printf("--------------------------------------------------\n");
+
+    printf("Enter username to delete: ");
+    scanf("%s", username);
+
+    inputFile = fopen("patient-data.txt", "r");
+    if (inputFile == NULL) {
+        printf("No patient records found.\n\n");
+        return;
+    }
+
+    tempFile = fopen("patient-data.txt.tmp", "w");
+    if (tempFile == NULL) {
+        printf("Error: Could not create temporary file.\n\n");
+        fclose(inputFile);
+        return;
+    }
+
+    while (fgets(line, sizeof(line), inputFile)) {
+        if (strstr(line, "Username: ") && strstr(line, username)) {
+            found = 1;
+            inTargetRecord = 1;
+            printf("\nPatient found! Current record:\n");
+            printf("%s", line);
+        }
+        else if (inTargetRecord) {
+            printf("%s", line);
+            if (strlen(line) == 1 && line[0] == '\n') {
+                inTargetRecord = 0;
+            }
+        }
+        else {
+            fprintf(tempFile, "%s", line);
+        }
+    }
+
+    fclose(inputFile);
+
+    if (found) {
+        printf("\nAre you sure you want to delete this record? (y/n): ");
+        scanf(" %c", &confirm);
+
+        if (confirm == 'y' || confirm == 'Y') {
+            fclose(tempFile);
+            remove("patient-data.txt");
+            rename("patient-data.txt.tmp", "patient-data.txt");
+            printf("Record deleted successfully!\n\n");
+        }
+        else {
+            fclose(tempFile);
+            remove("patient-data.txt.tmp");
+            printf("Deletion cancelled.\n\n");
+        }
+    }
+    else {
+        fclose(tempFile);
+        remove("patient-data.txt.tmp");
+        printf("No patient record found with username: %s\n\n", username);
+    }
+}
+
 // App entry point and main loop
 int main() {
     int choice;
@@ -273,12 +468,18 @@ int main() {
                 viewPatientDataById();
                 break;
             case 3:
-                docRecom();
+                updatePatient();
                 break;
             case 4:
-                aboutPlid();
+                deletePatient();
                 break;
             case 5:
+                docRecom();
+                break;
+            case 6:
+                aboutPlid();
+                break;
+            case 7:
                 printf("\nTake care & stay connected with PLID Connect.\n");
                 return 0;
             default:
