@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// -------------------------------------------------------
-// STRUCTURES
-// -------------------------------------------------------
-
 struct Patient {
     char username[100];
     char name[100];
@@ -26,18 +22,6 @@ struct User {
     char password[100];
 };
 
-// -------------------------------------------------------
-// GLOBAL
-// -------------------------------------------------------
-
-char loggedInUser[100] = "";
-
-// -------------------------------------------------------
-// HELPERS
-// -------------------------------------------------------
-
-// Checks if a line starts with a given label
-// e.g. hasLabel("Username: john\n", "Username: ") => 1
 int hasLabel(char line[], char label[]) {
     int len = strlen(label);
     int i;
@@ -49,8 +33,6 @@ int hasLabel(char line[], char label[]) {
     return 1;
 }
 
-// Extracts the value after a label in a line
-// e.g. getValue("Username: john\n", "Username: ", out) => out = "john"
 void getValue(char line[], char label[], char out[]) {
     int start = strlen(label);
     int len   = strlen(line);
@@ -61,10 +43,6 @@ void getValue(char line[], char label[], char out[]) {
     }
     out[i] = '\0';
 }
-
-// -------------------------------------------------------
-// AUTH
-// -------------------------------------------------------
 
 void registerUser() {
     struct User u;
@@ -80,7 +58,6 @@ void registerUser() {
     printf("Enter username: ");
     scanf("%s", u.username);
 
-    // Check if username already exists
     exists = 0;
     f = fopen("users.txt", "r");
     if (f != NULL) {
@@ -121,7 +98,6 @@ void registerUser() {
     printf("\nRegistration successful! You can now login.\n\n");
 }
 
-// Returns 1 if login is successful, 0 if failed
 int loginUser() {
     struct User u;
     char line[200];
@@ -155,8 +131,8 @@ int loginUser() {
             getValue(line, "Username: ", fileUser);
             if (strcmp(fileUser, u.username) == 0) {
                 found = 1;
-                fgets(line, sizeof(line), f); // skip Email line
-                fgets(line, sizeof(line), f); // read Password line
+                fgets(line, sizeof(line), f);
+                fgets(line, sizeof(line), f);
                 if (hasLabel(line, "Password: ")) {
                     getValue(line, "Password: ", filePass);
                     if (strcmp(u.password, filePass) == 0) {
@@ -180,16 +156,10 @@ int loginUser() {
         return 0;
     }
 
-    strcpy(loggedInUser, u.username);
     printf("Login successful! Welcome, %s.\n\n", u.username);
     return 1;
 }
 
-// -------------------------------------------------------
-// PATIENT FEATURES
-// -------------------------------------------------------
-
-// Prints health tips based on severity and BMI
 void showGuidance(int severity, float bmi) {
     printf("\nObservation & Guidance:\n");
 
@@ -241,6 +211,7 @@ void showGuidance(int severity, float bmi) {
 void addPatient() {
     struct Patient p;
     FILE *f;
+    int inches;
 
     printf("\n--------------------------------------------------\n");
     printf("Add New Patient\n");
@@ -249,8 +220,9 @@ void addPatient() {
     printf("Username (e.g. john123): ");
     scanf("%s", p.username);
 
-    printf("Nickname: ");
-    scanf("%s", p.name);
+    printf("Full Name: ");
+    scanf(" ");
+    fgets(p.name, 100, stdin);
 
     printf("Age: ");
     scanf("%d", &p.age);
@@ -264,17 +236,18 @@ void addPatient() {
     printf("Severity (1 = Mild, 2 = Moderate, 3 = Severe): ");
     scanf("%d", &p.severity);
 
-    printf("Height in feet (e.g. 5.7): ");
+    printf("Height - Feet: ");
     scanf("%f", &p.height);
+
+    printf("Height - Inches: ");
+    scanf("%d", &inches);
 
     printf("Weight in kg: ");
     scanf("%f", &p.weight);
 
-    // Calculate BMI
-    p.heightMeters = p.height * 0.3048;
+    p.heightMeters = (p.height * 12 + inches) * 0.0254;
     p.bmi          = p.weight / (p.heightMeters * p.heightMeters);
 
-    // Severity to text
     if (p.severity == 1) {
         strcpy(p.severityText, "Mild");
     } else if (p.severity == 2) {
@@ -283,7 +256,6 @@ void addPatient() {
         strcpy(p.severityText, "Severe");
     }
 
-    // BMI to category text
     if (p.bmi < 18.0) {
         strcpy(p.bmiText, "Underweight");
     } else if (p.bmi < 25.0) {
@@ -302,6 +274,7 @@ void addPatient() {
 
     fprintf(f, "Username: %s\n",     p.username);
     fprintf(f, "Name: %s\n",         p.name);
+    fprintf(f, "------ General Stats ------\n");
     fprintf(f, "Age: %d\n",          p.age);
     fprintf(f, "Gender: %s\n",       p.gender);
     fprintf(f, "Disc Level: %s\n",   p.discLevel);
@@ -345,7 +318,7 @@ void searchRecord() {
             if (strcmp(fileUser, username) == 0) {
                 found    = 1;
                 inRecord = 1;
-                printf("\n------ Your Patient Record ------\n");
+                printf("\n------ Your Record ------\n");
             } else {
                 inRecord = 0;
             }
@@ -385,9 +358,8 @@ void updateRecord() {
 
     printf("Which field to update?\n");
     printf("(N = Name, A = Age, G = Gender, D = Disc Level, S = Severity): ");
-    scanf(" %c", &field);
+    scanf("%c", &field);
 
-    // Accept lowercase too
     if (field >= 'a' && field <= 'z') {
         field = field - 'a' + 'A';
     }
@@ -510,10 +482,6 @@ void deleteRecord() {
     }
 }
 
-// -------------------------------------------------------
-// INFO
-// -------------------------------------------------------
-
 void showDoctors() {
     printf("\n--------------------------------------------------\n");
     printf("Doctor Recommendations\n");
@@ -565,18 +533,11 @@ void showMenu() {
     printf("--------------------------------------------------\n");
 }
 
-// -------------------------------------------------------
-// MAIN
-// -------------------------------------------------------
-
 int main() {
     int choice;
     int authChoice;
-    int loggedIn;
+    int loggedIn = 0;
 
-    loggedIn = 0;
-
-    // Authentication loop
     while (loggedIn == 0) {
         printf("\n--------------------------------------------------\n");
         printf("PLID Connect - Authentication\n");
@@ -590,7 +551,6 @@ int main() {
         printf("--------------------------------------------------\n");
         printf("Your choice: ");
         scanf("%d", &authChoice);
-
         switch (authChoice) {
             case 1:
                 registerUser();
@@ -608,12 +568,10 @@ int main() {
         }
     }
 
-    // Main menu loop
     while (1) {
         showMenu();
         printf("Your choice: ");
         scanf("%d", &choice);
-
         switch (choice) {
             case 1:
                 addPatient();
@@ -634,8 +592,7 @@ int main() {
                 showAbout();
                 break;
             case 7:
-                printf("\nTake care & stay connected with PLID Connect.\n");
-                printf("Logged out as: %s\n\n", loggedInUser);
+                printf("\nTake care & stay connected with PLID Connect.\n\n");
                 return 0;
             default:
                 printf("\nInvalid choice.\n");
