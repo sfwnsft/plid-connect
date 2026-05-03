@@ -6,3 +6,7 @@ Username: uu
 Email: uu
 Password: uu
 
+Username: safwan
+Email: safwan@yahoo.com
+Password: safwan
+
