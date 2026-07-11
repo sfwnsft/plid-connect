@@ -22,64 +22,60 @@ struct User {
     char password[100];
 };
 
-// checks if a line from the file starts with a given label
 int lineStartsWith(char line[], char label[]) {
-    int len = strlen(label);           // counts how many characters are in the label
-    for (int i = 0; i < len; i++) {    // loops through each character of the label one by one
-        if (line[i] != label[i]) {     // if any character doesn't match
-            return 0;                  // return 0 meaning false - it does NOT start with this label
+    int len = strlen(label);
+    for (int i = 0; i < len; i++) {
+        if (line[i] != label[i]) {
+            return 0;
         }
     }
-    return 1;                          // if all characters matched, return 1 meaning true
+    return 1;
 }
 
-// extracts the value after a label from a line and stores it in out[]
 void extractValue(char line[], char label[], char out[]) {
-    int start = strlen(label);     // skip past the label to where the value begins
-    int i = 0;                     // counter for copying characters one by one
-    char ch = line[start];         // grab the first character of the value
+    int start = strlen(label);
+    int i = 0;
+    char ch = line[start];
 
-    while (ch != '\n' && ch != '\0') {    // keep going until end of line or end of string
-        out[i] = ch;                      // copy this character into out
-        i++;                              // move to the next position
-        ch = line[start + i];             // grab the next character
+    while (ch != '\n' && ch != '\0') {
+        out[i] = ch;
+        i++;
+        ch = line[start + i];
     }
 
-    out[i] = '\0';    // mark the end of the string so C knows where it stops
+    out[i] = '\0';
 }
 
 void registerUser() {
     struct User u;
-    char line[200];        // temporary storage for each line read from the file
-    char fileUser[100];    // temporary storage for a username read from the file
-    int exists;            // flag: will be 1 if the username already exists, 0 if not
+    char line[200];
+    char fileUser[100];
+    int exists;
     FILE *f;
 
     printf("\n--------------------------------------------------\n");
     printf("Register New User\n");
     printf("--------------------------------------------------\n");
 
-    printf("Enter username: ");       // asks the user to type a username
-    scanf("%s", u.username); 
+    printf("Enter username: ");
+    scanf("%s", u.username);
 
-    // Checks for availability of already registered username.
-    exists = 0;                        // assume username does not exist yet
-    f = fopen("users.txt", "r");       // opens users.txt for reading
-    if (f != NULL) {                   // only proceed if the file was opened successfully
-        while (fgets(line, sizeof(line), f)) {           // reads the file one line at a time
-            if (lineStartsWith(line, "Username: ")) {    // checks if this line is a username line
-                extractValue(line, "Username: ", fileUser);          // extracts the username from the line
-                if (strcmp(fileUser, u.username) == 0) {             // checks if it matches the new username
-                    exists = 1;        // username already taken, so exists = 1
-                    break;             // found, so stopped.
+    exists = 0;
+    f = fopen("users.txt", "r");
+    if (f != NULL) {
+        while (fgets(line, sizeof(line), f)) {
+            if (lineStartsWith(line, "Username: ")) {
+                extractValue(line, "Username: ", fileUser);
+                if (strcmp(fileUser, u.username) == 0) {
+                    exists = 1;
+                    break;
                 }
             }
         }
-        fclose(f);    // closes the file after reading
+        fclose(f);
     }
 
-    // if username was already found
-    if (exists == 1) {                                                    
+    if (exists == 1) {
         printf("Username already exists. Please choose a different username.\n\n");
         return;
     }
@@ -90,28 +86,27 @@ void registerUser() {
     printf("Enter password: ");
     scanf("%s", u.password);
 
-    f = fopen("users.txt", "a");    // opens users.txt in append mode
-    if (f == NULL) {                // if the file couldn't be opened
+    f = fopen("users.txt", "a");
+    if (f == NULL) {
         printf("Error: Could not open users file.\n\n");
-        return;                                             // exit the function early
+        return;
     }
 
-    fprintf(f, "Username: %s\n", u.username);      // writes the username to the file
-    fprintf(f, "Email: %s\n", u.email);         // writes the email to the file
-    fprintf(f, "Password: %s\n\n", u.password);    // writes the password and a blank line after
-    fclose(f);                                     // closes the file after writing
+    fprintf(f, "Username: %s\n", u.username);
+    fprintf(f, "Email: %s\n", u.email);
+    fprintf(f, "Password: %s\n\n", u.password);
+    fclose(f);
 
     printf("\nRegistration successful! You can now login.\n\n");
 }
 
-// handles logging in with an existing account, returns 1 if successful, 0 if failed
 int loginUser() {
     struct User u;
-    char line[200];         // temporary storage for each line read from the file
-    char fileUser[100];     // temporary storage for a username read from the file
-    char filePass[100];     // temporary storage for a password read from the file
-    int found;              // 1 if the username was found in the file, 0 if not
-    int passMatch;          // 1 if the password matched, 0 if not
+    char line[200];
+    char fileUser[100];
+    char filePass[100];
+    int found;
+    int passMatch;
     FILE *f;
 
     printf("\n--------------------------------------------------\n");
@@ -124,43 +119,41 @@ int loginUser() {
     printf("Enter password: ");
     scanf("%s", u.password);
 
-    f = fopen("users.txt", "r");    // opens users.txt for reading
-    if (f == NULL) {                // if the file doesn't exist yet (no users registered)
+    f = fopen("users.txt", "r");
+    if (f == NULL) {
         printf("No user accounts found. Please register first.\n\n");
-        return 0;                   // return 0 meaning login failed
+        return 0;
     }
 
-    found = 0;        // assume username not found yet
-    passMatch = 0;    // assume password doesn't match yet
+    found = 0;
+    passMatch = 0;
 
-    while (fgets(line, sizeof(line), f)) {           // reads the file one line at a time
-        if (lineStartsWith(line, "Username: ")) {    // checks if this line contains a username
-            extractValue(line, "Username: ", fileUser);         // extracts the username from the line
+    while (fgets(line, sizeof(line), f)) {
+        if (lineStartsWith(line, "Username: ")) {
+            extractValue(line, "Username: ", fileUser);
             if (strcmp(fileUser, u.username) == 0) {
-                found = 1;                                      // username was found, so 1
-                fgets(line, sizeof(line), f);                   // skips the Email line (we don't need it)
-                fgets(line, sizeof(line), f);                   // reads the next line which should be the Password line
-                if (lineStartsWith(line, "Password: ")) {       // confirms this line is the password line
-                    extractValue(line, "Password: ", filePass); // extracts the password from the line
-                    if (strcmp(u.password, filePass) == 0) {    // compares typed password with stored password
-                        passMatch = 1;                          // passwords match, set flag to 1
+                found = 1;
+                fgets(line, sizeof(line), f);
+                fgets(line, sizeof(line), f);
+                if (lineStartsWith(line, "Password: ")) {
+                    extractValue(line, "Password: ", filePass);
+                    if (strcmp(u.password, filePass) == 0) {
+                        passMatch = 1;
                     }
                 }
-                break;    // stop reading the file, password found & matched.
+                break;
             }
         }
     }
 
     fclose(f);
 
-    // if username was never found
     if (found == 0) {
         printf("Username not found. Please register first.\n\n");
-        return 0;                                                  
+        return 0;
     }
 
-    // if password did not match
-    if (passMatch == 0) {                      
+    if (passMatch == 0) {
         printf("Incorrect password.\n\n");
         return 0;
     }
@@ -169,11 +162,10 @@ int loginUser() {
     return 1;
 }
 
-// prints personalized health guidance based on severity and BMI
 void showGuidance(int severity, float bmi) {
     printf("\nObservation & Guidance:\n");
 
-    if (severity == 1) {                                                  
+    if (severity == 1) {
         printf("1. Mild condition: Start with rest and physiotherapy.\n");
     } else if (severity == 2) {
         printf("1. Moderate condition: Regular physiotherapy is needed.\n");
@@ -218,7 +210,6 @@ void showGuidance(int severity, float bmi) {
     }
 }
 
-// collects patient information, saves it to file, and shows guidance
 void addPatient() {
     struct Patient p;
     FILE *f;
@@ -232,7 +223,7 @@ void addPatient() {
     scanf("%s", p.username);
 
     printf("Full Name: ");
-    scanf(" ");                            // removes the leftover \n from the input buffer
+    scanf(" ");
     fgets(p.name, 100, stdin);
 
     printf("Age: ");
@@ -256,15 +247,15 @@ void addPatient() {
     printf("Weight (Kg): ");
     scanf("%f", &p.weight);
 
-    p.heightMeters = (p.height * 12 + inches) * 0.0254;   // converts feet and inches to meters
-    p.bmi = p.weight / (p.heightMeters * p.heightMeters); // calculates BMI using weight/height * height
+    p.heightMeters = (p.height * 12 + inches) * 0.0254;
+    p.bmi = p.weight / (p.heightMeters * p.heightMeters);
 
     if (p.severity == 1) {
-        strcpy(p.severityText, "Mild");           // store the word "Mild" in severityText
+        strcpy(p.severityText, "Mild");
     } else if (p.severity == 2) {
-        strcpy(p.severityText, "Moderate");       // store the word "Moderate"
+        strcpy(p.severityText, "Moderate");
     } else {
-        strcpy(p.severityText, "Severe");         // store the word "Severe"
+        strcpy(p.severityText, "Severe");
     }
 
     if (p.bmi < 18.0) {
@@ -277,7 +268,7 @@ void addPatient() {
         strcpy(p.bmiText, "Obese");
     }
 
-    f = fopen("patient-data.txt", "a");    // opens the patient data file in append mode
+    f = fopen("patient-data.txt", "a");
     if (f == NULL) {
         printf("Error: Could not open data file for writing.\n\n");
         return;
@@ -296,16 +287,15 @@ void addPatient() {
     printf("\nPatient data saved successfully!\n");
     printf("Use your username: %s to view your data later\n", p.username);
 
-    showGuidance(p.severity, p.bmi);    // calls the guidance function to show health tips
+    showGuidance(p.severity, p.bmi);
 }
 
-// searches for and displays a patient's record by username
 void searchRecord() {
     char username[100];
-    char fileUser[100];    // temporary storage for usernames read from the file
-    char line[200];        // temporary storage for each line read from the file
-    int found;             // 1 if the record was found, 0 if not
-    int inRecord;          // 1 if we are currently inside the matching record, 0 if not
+    char fileUser[100];
+    char line[200];
+    int found;
+    int inRecord;
     FILE *f;
 
     printf("\n--------------------------------------------------\n");
@@ -315,35 +305,35 @@ void searchRecord() {
     printf("Enter your Username: ");
     scanf("%s", username);
 
-    f = fopen("patient-data.txt", "r");    // opens the patient data file for reading
+    f = fopen("patient-data.txt", "r");
     if (f == NULL) {
         printf("No patient records found.\n\n");
         return;
     }
 
-    found = 0;    // assume record not found yet
-    inRecord = 0;    // assume we are not inside any record yet
+    found = 0;
+    inRecord = 0;
 
-    while (fgets(line, sizeof(line), f)) {                  // reads the file one line at a time
-        if (lineStartsWith(line, "Username: ")) {           // if this line is a username line
-            extractValue(line, "Username: ", fileUser);     // extract the username from the line
-            if (strcmp(fileUser, username) == 0) {          // if it matches the searched username
-                found = 1;                                  // mark as found
-                inRecord = 1;                               // we are now inside the matching record
+    while (fgets(line, sizeof(line), f)) {
+        if (lineStartsWith(line, "Username: ")) {
+            extractValue(line, "Username: ", fileUser);
+            if (strcmp(fileUser, username) == 0) {
+                found = 1;
+                inRecord = 1;
                 printf("\n------ Your Record ------\n");
-            } 
+            }
             else {
                 inRecord = 0;
             }
         }
-        if (inRecord == 1) {          // if we are currently inside the matching record
-            printf("%s", line);       // print this line to the screen
+        if (inRecord == 1) {
+            printf("%s", line);
         }
     }
 
     fclose(f);
 
-    if (found == 0) {                                               
+    if (found == 0) {
         printf("No record found with username: %s\n", username);
         printf("Please check your username and try again.\n\n");
     } else {
@@ -351,17 +341,16 @@ void searchRecord() {
     }
 }
 
-// updates a specific field in a patient's record
 void updateRecord() {
     char username[100];
     char fileUser[100];
-    char newValue[100];     // stores the new value the user wants to set
-    char line[200];         
-    char field;             // stores the letter choice of which field to update (N, A, G, D, S)
-    int found;              // 1 if the username was found, 0 if not
-    int inRecord;           // 1 if we are currently inside the matching record, 0 if not
-    FILE *f;                
-    FILE *temp;             // file pointer for the temporary file used during update
+    char newValue[100];
+    char line[200];
+    char field;
+    int found;
+    int inRecord;
+    FILE *f;
+    FILE *temp;
 
     printf("\n--------------------------------------------------\n");
     printf("Update Patient Record\n");
@@ -371,49 +360,49 @@ void updateRecord() {
     scanf("%s", username);
 
     printf("Which field do you want to update?\n");
-    
-    printf("Name (N), Age (A), Gender (G), Disc Level (D), Severity (S): ");
-    scanf(" %c", &field);                       // reads a single character (space before %c removes leftover \n)
 
-    if (field >= 'a' && field <= 'z') {         // if the user typed a lowercase letter
-        field = field - 'a' + 'A';              // convert it to uppercase so both cases work
+    printf("Name (N), Age (A), Gender (G), Disc Level (D), Severity (S): ");
+    scanf(" %c", &field);
+
+    if (field >= 'a' && field <= 'z') {
+        field = field - 'a' + 'A';
     }
 
     printf("Enter new value: ");
     scanf("%s", newValue);
 
-    f = fopen("patient-data.txt", "r");       // opens the original file for reading
-    temp = fopen("temp.txt", "w");            // creates a temporary file for writing
+    f = fopen("patient-data.txt", "r");
+    temp = fopen("temp.txt", "w");
 
-    if (f == NULL || temp == NULL) {                   // if either file couldn't be opened
-        printf("Error: Could not open files.\n\n");    // print error message
-        
+    if (f == NULL || temp == NULL) {
+        printf("Error: Could not open files.\n\n");
+
         if (f != NULL) {
-            fclose(f);      // close original file if it was opened
+            fclose(f);
         }
         if (temp != NULL) {
-            fclose(temp);   // close temp file if it was opened
-        }                
+            fclose(temp);
+        }
         return;
     }
 
-    found = 0;       // assume username not found yet
-    inRecord = 0;    // assume we are not inside any record yet
+    found = 0;
+    inRecord = 0;
 
-    while (fgets(line, sizeof(line), f)) {               // reads the file one line at a time
-        if (lineStartsWith(line, "Username: ")) {        // if this line is a username line
-            extractValue(line, "Username: ", fileUser);  // extract the username from the line
-            if (strcmp(fileUser, username) == 0) {       
-                found = 1;                               
-                inRecord = 1;                            
-            } 
-            else {                                       // if it belongs to a different patient
-                inRecord = 0;                            // we are no longer inside the matching record
+    while (fgets(line, sizeof(line), f)) {
+        if (lineStartsWith(line, "Username: ")) {
+            extractValue(line, "Username: ", fileUser);
+            if (strcmp(fileUser, username) == 0) {
+                found = 1;
+                inRecord = 1;
+            }
+            else {
+                inRecord = 0;
             }
 
-            fprintf(temp, "%s", line);                   // always write the username line unchanged
+            fprintf(temp, "%s", line);
         }
-        
+
         else if (inRecord == 1 && lineStartsWith(line, "Name: ") && field == 'N') {
             fprintf(temp, "Name: %s\n", newValue);
         }
@@ -430,25 +419,24 @@ void updateRecord() {
             fprintf(temp, "Severity: %s\n", newValue);
         }
         else {
-            fprintf(temp, "%s", line);    // for all other lines, copy them unchanged to temp file
+            fprintf(temp, "%s", line);
         }
     }
 
-    fclose(f);       // closes the original file
-    fclose(temp);    // closes the temp file
+    fclose(f);
+    fclose(temp);
 
-    if (found == 1) {                               // if the username was found and updated
-        remove("patient-data.txt");                 // deletes the original file
-        rename("temp.txt", "patient-data.txt");     // renames temp file to replace the original
-        printf("Record updated successfully!\n\n"); // confirms the update worked
-    } 
-    else {                                          // if the username was not found
-        remove("temp.txt");                         // deletes the unused temp file
-        printf("Username not found.\n\n");          // tells the user the username didn't exist
+    if (found == 1) {
+        remove("patient-data.txt");
+        rename("temp.txt", "patient-data.txt");
+        printf("Record updated successfully!\n\n");
+    }
+    else {
+        remove("temp.txt");
+        printf("Username not found.\n\n");
     }
 }
 
-// deletes a patient's entire record from the file
 void deleteRecord() {
     char username[100];
     char fileUser[100];
@@ -468,7 +456,7 @@ void deleteRecord() {
     f = fopen("patient-data.txt", "r");
     temp = fopen("temp.txt", "w");
 
-    if (f == NULL || temp == NULL) {                   // if either file couldn't be opened
+    if (f == NULL || temp == NULL) {
         printf("Error: Could not open files.\n\n");
         if (f != NULL) {
             fclose(f);
@@ -489,32 +477,30 @@ void deleteRecord() {
                 found = 1;
                 inRecord = 1;
                 printf("Found record for %s. Deleting...\n", username);
-            } 
-            else {                                     
+            }
+            else {
                 inRecord = 0;
             }
         }
         if (inRecord == 0) {
-            fprintf(temp, "%s", line);     // copy this line to the temp file (keep it)
+            fprintf(temp, "%s", line);
         }
-        // if inRecord == 1, we do nothing — the line is skipped and effectively deleted
     }
 
     fclose(f);
     fclose(temp);
 
-    if (found == 1) {                               // if the username was found and deleted
+    if (found == 1) {
         remove("patient-data.txt");
         rename("temp.txt", "patient-data.txt");
         printf("Record deleted successfully!\n\n");
-    } 
-    else {                                          // if the username was not found
-        remove("temp.txt");                         // deletes the unused temp file
+    }
+    else {
+        remove("temp.txt");
         printf("Username not found.\n\n");
     }
 }
 
-// displays a list of recommended doctors
 void showDoctors() {
     printf("\n--------------------------------------------------\n");
     printf("Verified PLID & Spine Specialists\n");
@@ -545,36 +531,34 @@ void showDoctors() {
     printf("--------------------------------------------------\n\n");
 }
 
-// displays information about PLID and about this project
 void showAbout() {
     printf("\n--------------------------------------------------\n");
     printf("About PLID\n");
     printf("--------------------------------------------------\n");
-    printf("PLID means Prolapsed Lumbar Intervertebral Disc.\n");                                          
+    printf("PLID means Prolapsed Lumbar Intervertebral Disc.\n");
     printf("This happens when a disc in the lower back moves out of place and presses nearby nerves.\n\n");
 
-    printf("Common Causes:\n");                                       
-    printf("1. Repeated heavy lifting with poor posture\n");           
-    printf("2. Sudden twisting or bending movements\n");               
-    printf("3. Age-related disc wear and tear\n");                    
-    printf("4. Back injury or accident\n\n");                         
+    printf("Common Causes:\n");
+    printf("1. Repeated heavy lifting with poor posture\n");
+    printf("2. Sudden twisting or bending movements\n");
+    printf("3. Age-related disc wear and tear\n");
+    printf("4. Back injury or accident\n\n");
 
-    printf("Risk Factors:\n");                                         
-    printf("1. Overweight or obesity\n");                              
-    printf("2. Long duration of sitting\n");                           
-    printf("3. Weak core and back muscles\n");                         
-    printf("4. Smoking and low physical activity\n");                  
-    printf("5. Family history of spine problems\n\n");                 
+    printf("Risk Factors:\n");
+    printf("1. Overweight or obesity\n");
+    printf("2. Long duration of sitting\n");
+    printf("3. Weak core and back muscles\n");
+    printf("4. Smoking and low physical activity\n");
+    printf("5. Family history of spine problems\n\n");
 
     printf("--------------------------------------------------\n");
-    printf("About PLID Connect\n");                                   
+    printf("About PLID Connect\n");
     printf("--------------------------------------------------\n");
     printf("PLID Connect is a data-driven TUI based CRUD application developed & maintained by Safwan Safat.\n");
     printf("It manages user's records and provides automated specialist recommendations,\n");
     printf("guidance, healthcare tips based on the data.\n\n");
 }
 
-// displays the main menu options
 void showMenu() {
     printf("--------------------------------------------------\n");
     printf("PLID Connect - Dashboard\n");
@@ -589,11 +573,10 @@ void showMenu() {
     printf("--------------------------------------------------\n");
 }
 
-// the main function
 int main() {
     int choice;
-    int authChoice;      // stores the user's choice on the login/register screen
-    int loggedIn = 0;    // at 0 (not logged in), 1 after successful login
+    int authChoice;
+    int loggedIn = 0;
 
     while (loggedIn == 0) {
         printf("\n--------------------------------------------------\n");
@@ -614,7 +597,7 @@ int main() {
                 break;
             case 2:
                 if (loginUser() == 1) {
-                    loggedIn = 1;          // set loggedIn to 1 so the while loop ends
+                    loggedIn = 1;
                 }
                 break;
             case 3:
